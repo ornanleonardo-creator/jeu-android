@@ -1,0 +1,33 @@
+name: Init Gradle Wrapper
+
+on:
+  workflow_dispatch:
+
+jobs:
+  init:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Gradle
+        run: |
+          sudo apt update
+          sudo apt install -y gradle
+
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.4
+
+      - name: Commit Gradle Wrapper
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add gradlew gradle/wrapper
+          git commit -m "Generate Gradle Wrapper"
+          git push
